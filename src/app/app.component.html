@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+      <h1 class="display-4">Monitor</h1>
+      <h1>
+      <span class="badge badge-lg badge-primary">{{entranceNum}}</span>
+      <span class="badge badge-danger">{{exitNum}}</span>
+    </h1>
+    </div>
+  
+  <div class="content">
+    <div class="card-deck mb-3 text-center">
+      <div class="card mb-3 box-shadow" *ngFor="let c of profiles">
+        <div class="card-header text-white" [class.bg-success]="c.action == '1'" [class.bg-danger]="c.action == '2'">
+          <h4 class="my-0 font-weight-normal">Gate {{c.gate_no}}</h4>
+        </div>
+        <div class="card-body">
+          <img class="rounded-circle" [src]="'../assets/img/' + c.photo" alt="Generic placeholder image" width="220" height="220">
+          <h3 class="card-title">{{c.last_name}}</h3>
+          <h3 class="card-title">{{c.first_name}}</h3>
+          <h1><span class="badge badge-secondary">{{c.class}}</span></h1>
+          <p>NFC: {{c.nfc_id}}</p>
+          <span *ngIf="c.action == '1'" class="badge badge-success">Entrance</span>
+          <span *ngIf="c.action == '2'" class="badge badge-danger">Exit</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
