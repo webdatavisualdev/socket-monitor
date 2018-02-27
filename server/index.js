@@ -9,6 +9,8 @@ const bodyParser = require('body-parser');
 const app = express();
 
 var profiles = [];
+var maxGates = 4;
+var maxSec = 3;
 
 // Parsers for POST data
 app.use(bodyParser.json());
@@ -45,6 +47,7 @@ var io = require('socket.io').listen(server);
 io.sockets.on('connection', (socket) => {
 
   console.log('user connected');
+  profiles = [];
 
   socket.on('disconnect', function() {
       console.log('user disconnected');
@@ -63,12 +66,42 @@ app.post('/add', (req, res) => {
     profiles.forEach(p => {
         if (p.gate_no === req.body.gate_no) {
             isExist = true;
+            p.first_name = req.body.first_name;
+            p.last_name = req.body.last_name;
+            p.class = req.body.class;
+            p.photo = req.body.photo;
+            p.nfc_id = req.body.nfc_id;
+            p.action = req.body.action;
+            p.currentSec = 0;
         }
     });
-    if (!isExist) {
-        profiles.push(req.body);
+    if (!isExist && req.body.gate_no <= maxGates) {
+        var profile = req.body;
+        profile.currentSec = 0;
+        profiles.push(profile);
+    } else if (req.body.gate_no > maxGates) {
+        res.send({
+            success: false,
+            message: 'Max gate number should be equal to or smaller than' + maxGates
+        });
     }
 
     io.emit('profile', profiles);
     res.send('success');
 });
+
+var timer = setInterval(function() {
+    var noUpdatedNum = 0;
+    profiles.forEach((p, index) => {
+        if (p.currentSec > 3) {
+            noUpdatedNum ++;
+        } else {
+            p.currentSec ++;
+        }
+    });
+    if (noUpdatedNum == profiles.length) {
+        profiles = [];
+        io.emit('profile', profiles);
+        noUpdatedNum = 0;
+    }
+}, 1000);
