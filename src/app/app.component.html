@@ -1,26 +1,31 @@
 <div class="container">
   <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-      <h1 class="display-4">Monitor</h1>
-      <h1>
-      <span class="badge badge-lg badge-primary">{{entranceNum}}</span>
+    <h1 class="display-4">Monitor</h1>
+    <h1>
+      <span class="badge badge-lg badge-success">{{entranceNum}}</span>
       <span class="badge badge-danger">{{exitNum}}</span>
     </h1>
-    </div>
+  </div>
   
   <div class="content">
-    <div class="card-deck mb-3 text-center">
-      <div class="card mb-3 box-shadow" *ngFor="let index of gates">
-        <div class="card-header text-white" [class.bg-success]="profiles[index] && profiles[index].action == '1'" [class.bg-danger]="profiles[index] && profiles[index].action == '2'">
-          <h4 class="my-0 font-weight-normal">Gate {{profiles[index] ? profiles[index].gate_no : ''}}</h4>
-        </div>
-        <div class="card-body">
-          <img class="rounded-circle" *ngIf="profiles[index]" [src]="'../assets/img/' + profiles[index].photo" alt="Generic placeholder image" width="220" height="220">
-          <h3 class="card-title">{{profiles[index] ? profiles[index].last_name : ''}}</h3>
-          <h3 class="card-title">{{profiles[index] ? profiles[index].first_name : ''}}</h3>
-          <h1><span class="badge badge-secondary">{{profiles[index] ? profiles[index].class : ''}}</span></h1>
-          <p>NFC: {{profiles[index] ? profiles[index].nfc_id : ''}}</p>
-          <span *ngIf="profiles[index] && profiles[index].action == '1'" class="badge badge-success">Entrance</span>
-          <span *ngIf="profiles[index] && profiles[index].action == '2'" class="badge badge-danger">Exit</span>
+    <div class="row mb-3 text-center">
+      <div class="col-12 col-sm-6 col-md-3" *ngFor="let index of gates">
+        <div class="card mb-3 box-shadow h-100">
+          <div class="card-header"
+            [class.bg-success]="profiles[index]?.action == 1"
+            [class.bg-danger]="profiles[index]?.action == 2"
+            [class.text-white]="profiles[index]?.action">
+            <h4 class="my-0 font-weight-normal">Gate {{profiles[index]?.gate_no}}</h4>
+          </div>
+          <div class="card-body">
+            <img class="rounded-circle img" *ngIf="profiles[index]" [src]="'../assets/img/' + profiles[index].photo" alt="Generic placeholder image">
+            <h3 class="card-title">{{profiles[index]?.last_name}}</h3>
+            <h3 class="card-title">{{profiles[index]?.first_name}}</h3>
+            <h1><span class="badge badge-secondary">{{profiles[index]?.class}}</span></h1>
+            <p>NFC: {{profiles[index]?.nfc_id}}</p>
+            <span *ngIf="profiles[index]?.action == 1" class="badge badge-success">Entrance</span>
+            <span *ngIf="profiles[index]?.action == 2" class="badge badge-danger">Exit</span>
+          </div>
         </div>
       </div>
     </div>

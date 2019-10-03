@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class ApiService {
-  private url = 'http://localhost:3000/';
+  private url = 'https://nodesocket-server.herokuapp.com/';
   private socket;
   profile = new BehaviorSubject(null);
 
@@ -15,8 +15,11 @@ export class ApiService {
     this.socket = io(this.url);
     this.socket.on('profile', (data) => {
       this.profile.next(data.sort(function(a, b) {
-        if (a.gate_no > b.gate_no) return true;
-        else return false;
+        if (a.gate_no > b.gate_no) {
+          return true;
+        } else {
+          return false;
+        }
       }));
     });
   }

@@ -10,7 +10,6 @@ const app = express();
 
 var profiles = [];
 var maxGates = 4;
-var maxSec = 3;
 
 // Parsers for POST data
 app.use(bodyParser.json());
@@ -72,12 +71,14 @@ app.post('/add', (req, res) => {
             p.photo = req.body.photo;
             p.nfc_id = req.body.nfc_id;
             p.action = req.body.action;
+            p.new = true;
             p.currentSec = 0;
         }
     });
     if (!isExist && req.body.gate_no <= maxGates) {
         var profile = req.body;
         profile.currentSec = 0;
+        profile.new = true;
         profiles.push(profile);
     } else if (req.body.gate_no > maxGates) {
         res.send({
@@ -93,6 +94,7 @@ app.post('/add', (req, res) => {
 var timer = setInterval(function() {
     var noUpdatedNum = 0;
     profiles.forEach((p, index) => {
+        p.new = false;
         if (p.currentSec > 3) {
             noUpdatedNum ++;
         } else {

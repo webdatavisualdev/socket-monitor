@@ -16,23 +16,31 @@ export class AppComponent {
   constructor(
     private apiService: ApiService,
   ) {
-    this.gates.forEach(g => {
-      this.profiles[g] = null;
-    });
-
-    this.apiService.profile.subscribe(res => {
+    if (localStorage.getItem('logged_date') && parseInt(localStorage.getItem('logged_date'), 10) !== new Date().getDate()) {
       this.entranceNum = 0;
       this.exitNum = 0;
+      localStorage.setItem('entranceNum', '0');
+      localStorage.setItem('exitNum', '0');
+      localStorage.setItem('logged_date', new Date().getDate().toString());
+    } else if (!localStorage.getItem('logged_date')) {
+      localStorage.setItem('logged_date', new Date().getDate().toString());
+    } else if (localStorage.getItem('logged_date') && parseInt(localStorage.getItem('logged_date'), 10) === new Date().getDate()) {
+      this.entranceNum = parseInt(localStorage.getItem('entranceNum'), 10) || 0;
+      this.exitNum = parseInt(localStorage.getItem('exitNum'), 10) || 0;
+    }
+
+    this.apiService.profile.subscribe(res => {
       this.profiles = [];
-      
       if (res) {
         res.forEach(p => {
-          if (p.action == 1) {
+          if (p.action === 1 && p.new) {
             this.entranceNum ++;
-          } else {
+          } else if (p.action === 2 && p.new) {
             this.exitNum ++;
           }
-          this.profiles[parseInt(p.gate_no)] = p;
+          localStorage.setItem('entranceNum', this.entranceNum.toString());
+          localStorage.setItem('exitNum', this.exitNum.toString());
+          this.profiles[parseInt(p.gate_no, 10)] = p;
         });
       }
     });
